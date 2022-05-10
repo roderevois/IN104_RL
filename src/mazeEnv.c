@@ -84,26 +84,29 @@ envOutput maze_step(action a){
     int reward = 0;
     int done = 0;
     envOutput stepOut;
+    
+    int rowbis = state_row;
+    int colbis = state_col;
 
     if (a==up){
-       state_row = max(0,state_row -1);
+       rowbis = max(0,state_row -1);
     }else if (a==down){
-       state_row = min(rows,state_row +1);
+       rowbis = min(rows,state_row +1);
     }else if (a==right){
-       state_col = min(cols,state_col +1);
+       colbis = min(cols,state_col +1);
     }else if (a==left){
-       state_col = max(0,state_col -1);
+       colbis = max(0,state_col -1);
     }
-    
-    if((state_row == goal_row) && (state_col == goal_col)){
+
+    if((rowbis == goal_row) && (colbis == goal_col)){
        reward = 1;
        done   = 1;
     }
 
     stepOut.reward = reward;
     stepOut.done   = done;
-    stepOut.new_col = state_col;
-    stepOut.new_row = state_row; 
+    stepOut.new_col = colbis;
+    stepOut.new_row = rowbis; 
 
    return stepOut;
 }
