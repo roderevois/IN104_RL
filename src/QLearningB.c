@@ -3,11 +3,14 @@
 #include "mazeEnv.h"
 #include "functions.h"
 #include <stdbool.h>
+#include <math.h>
 
 double** Q;
 
 //Fonction de policy
 enum action eps_greedy(float epsilon) {
+
+	srand(time(NULL));
 	int r = 0;
 	int a = 0;
 	r = rand() % 1000;
@@ -17,13 +20,54 @@ enum action eps_greedy(float epsilon) {
 		
 	else { //On choisit une action qui maximise Q
 		
+		int nb = 1;
 		float m = Q[state_row*cols+state_col][0];
+		
 		for (int i=1; i<4; i++) {
 			
+			//Compte du nombre de maxima nb
+			//Nouveau maximum au dessus des autres
 			if (m<Q[state_row*cols+state_col][i]) {
 				m = Q[state_row*cols+state_col][i];
-				a = i; }
-				}
+				nb = 1;
+				a = i;
+			}
+			
+			//Si égalité, un de plus
+			if (m==Q[state_row*cols+state_col][i]) {
+				nb = nb+1;
+			}
+		}
+		
+		//Si un seul maximum, on le connais déjà, cas simple
+		if (nb == 1) {
+			if (a==0) {
+				return up; }
+			if (a==1) {
+				return down; }
+			if (a==2) {
+				return left; }
+			else {
+				return right; }
+		}
+		
+		//Sinon on parcourt la liste et toutes les abscisses égales au dernier maximum sont stockées
+			//M va stocker les indices des nb maxima de Q
+		M = malloc(sizeof(int)*nb);
+		int p = 0;
+
+		for (int i=1; i<4; i++) {
+			if (m==Q[state_row*cols+state_col][i]) {
+				M[p] = i;
+				p = p+1;
+			}
+		}
+		
+		r = rand() % nb;
+		a = M[r];
+		
+		free(M);
+		
 		if (a==0) {
 			return up; }
 		if (a==1) {
@@ -32,8 +76,10 @@ enum action eps_greedy(float epsilon) {
 			return left; }
 		else {
 			return right; }
-		}
+		
+		
 	}
+}
 
 //Implémentation de la fonction Q-learning
 //Initialisation
@@ -56,17 +102,17 @@ void QInitialisation() {
 
 	for (int j=0; j<4; j++) { //L'arrivée est à 0
 		Q[goal_row*cols+goal_col][j] = 0; }
-	//return Q;
 	}
 
 //Training
 void QTraining (int i_max, float epsilon, float alpha, float gamma) {
 
-	printf("GoalRow = %d, GoalCol = %d\n", goal_row, goal_col);
+	//printf("GoalRow = %d, GoalCol = %d\n", goal_row, goal_col);
 	
 	for (int i = 0; i<i_max; i++) {
-
-		printf("i = %d\n",i);
+		
+		//alpha = 0.5*(1 - (float)i/((float)i_max-1));
+		//printf("epsilon = %2f\n",epsilon);
 		maze_reset();
 		//printf("InitRow: %d, InitCol: %d\n",state_row,state_col);
 
@@ -101,17 +147,25 @@ void QTraining (int i_max, float epsilon, float alpha, float gamma) {
 				state_row = new_row;
 				state_col = new_col;
 				
-				}
-				//else {
-				//Q[state_row*cols+state_col][a] = 0.005; }
+				if (i==i_max-1) { 
+					if ((state_row != start_row || state_col != start_col) && (state_row != goal_row || state_col != goal_col)) {
+						
+						maze[state_row][state_col] ='.';
+					}
 				
+				}
 			
-			//Si nous ne sommes pas rentrés dans la boucle if, nous étions dans un mur et on retrouve une nouvelle action via la policy comme si rien ne s'était passé
 			}
-		//printf("SortieWhileRow = %d, SortieWhileCol = %d\n",state_row,state_col );
+			
+			else {
+				Q[state_row*cols+state_col][a] = 0;
+			}
+			//Si nous ne sommes pas rentrés dans la boucle if, nous étions dans un mur et on retrouve une nouvelle action via la policy comme si rien ne s'était passé
 		}
-	printf("5\n");
+		//printf("SortieWhileRow = %d, SortieWhileCol = %d\n",state_row,state_col );
 	}
+	printf("5\n");
+}
 
 void Q_render(){
      for (int i=0; i<rows*cols; i++) {
@@ -124,7 +178,7 @@ void Q_render(){
 }
 
 int main() {
-	maze_make("maze_test.txt");
+	maze_make("maze.txt");
   	init_visited();
   	maze_render();
   	
@@ -137,6 +191,7 @@ int main() {
    	Q_render();
    	QTraining(2000,epsilon,alpha,gamma);
    	Q_render();
+   	maze_render();
    	
    	free(visited);
    	free(maze);

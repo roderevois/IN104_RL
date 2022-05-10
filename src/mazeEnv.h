@@ -59,4 +59,6 @@ void alloc_visited();
 
 void init_visited();
 
+void add_crumbs();
+
 #endif /* MAZEENV_H */

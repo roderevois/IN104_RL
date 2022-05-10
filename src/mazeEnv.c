@@ -143,3 +143,14 @@ void init_visited()
         }
 }
 
+void add_crumbs(){
+     for (int i=0; i<rows; i++){
+          for (int j=0; j<cols; j++){
+              if (visited[i][j] ==crumb){
+                  maze[i][j] ='.';
+              }
+          }
+     }
+     maze[start_row][start_col]= 's';
+}
+
