@@ -10,8 +10,6 @@ double** Q;
 
 //Fonction de policy
 enum action eps_greedy(float epsilon) {
-
-	srand(time(NULL));
 	int r = 0;
 	int a = 0;
 	r = rand() % 1000;
@@ -21,43 +19,13 @@ enum action eps_greedy(float epsilon) {
 		
 	else { //On choisit une action qui maximise Q
 		
-		int nb = 1;
 		float m = Q[state_row*cols+state_col][0];
-		
 		for (int i=1; i<4; i++) {
 			
-			//Compte du nombre de maxima nb
-			//Nouveau maximum au dessus des autres
 			if (m<Q[state_row*cols+state_col][i]) {
 				m = Q[state_row*cols+state_col][i];
-				nb = 1;
-				a = i;
-			}
-			
-			//Si égalité, un de plus
-			if (m==Q[state_row*cols+state_col][i]) {
-				nb = nb+1;
-			}
-		}
-		
-		//M va stocker les indices des nb maxima de Q
-		int M = malloc(sizeof(int)*nb);
-		int p = 0;
-
-		//On parcourt la ligne de Q, quand égal au maximum, on stocke
-		for (int i=1; i<4; i++) {
-			if (m==Q[state_row*cols+state_col][i]) {
-				M[p] = i;
-				p = p+1;
-			}
-		}
-		
-		//On choisit au hasard un des indices
-		r = rand() % nb;
-		a = M[r];
-		
-		free(M);
-		
+				a = i; }
+				}
 		if (a==0) {
 			return up; }
 		if (a==1) {
@@ -66,11 +34,9 @@ enum action eps_greedy(float epsilon) {
 			return left; }
 		else {
 			return right; }
-		
-		
+		}
 	}
-}
-
+	
 //Implémentation de la fonction Q-learning
 //Initialisation
 void QInitialisation() {
@@ -101,8 +67,9 @@ void QTraining (int i_max, float epsilon, float alpha, float gamma) {
 	
 	for (int i = 0; i<i_max; i++) {
 		
-		//alpha = 0.5*(1 - (float)i/((float)i_max-1));
+		epsilon = 0.5*(1 - (float)i/((float)i_max-1));
 		//printf("epsilon = %2f\n",epsilon);
+		printf("i = %d\n",i);
 		maze_reset();
 		//printf("InitRow: %d, InitCol: %d\n",state_row,state_col);
 
@@ -147,14 +114,14 @@ void QTraining (int i_max, float epsilon, float alpha, float gamma) {
 			
 			}
 			
-			else {
-				Q[state_row*cols+state_col][a] = 0;
-			}
+			
+			//if  ((*current) == (wall)) {
+			//	Q[state_row*cols+state_col][a] = 0;
+			//}
 			//Si nous ne sommes pas rentrés dans la boucle if, nous étions dans un mur et on retrouve une nouvelle action via la policy comme si rien ne s'était passé
 		}
 		//printf("SortieWhileRow = %d, SortieWhileCol = %d\n",state_row,state_col );
 	}
-	printf("5\n");
 }
 
 void Q_render(){
@@ -179,7 +146,7 @@ int main() {
    	printf("number of actions :  %d \n", number_actions);
    	QInitialisation();
    	Q_render();
-   	QTraining(2000,epsilon,alpha,gamma);
+   	QTraining(20,epsilon,alpha,gamma);
    	Q_render();
    	maze_render();
    	
