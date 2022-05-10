@@ -16,3 +16,4 @@ $(SRC)%.o: $(SRC)%.c
 
 clean: 
 	rm -rf $(SRC)*.o $(EXEC)
+
