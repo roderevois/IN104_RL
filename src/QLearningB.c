@@ -102,8 +102,8 @@ void QTraining (int i_max, float epsilon, float alpha, float gamma) {
 				state_col = new_col;
 				
 				}
-				else {
-				Q[state_row*cols+state_col][a] = 0.005; }
+				//else {
+				//Q[state_row*cols+state_col][a] = 0.005; }
 				
 			
 			//Si nous ne sommes pas rentrés dans la boucle if, nous étions dans un mur et on retrouve une nouvelle action via la policy comme si rien ne s'était passé
