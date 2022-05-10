@@ -4,6 +4,7 @@
 #include "functions.h"
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
 
 double** Q;
 
@@ -39,23 +40,11 @@ enum action eps_greedy(float epsilon) {
 			}
 		}
 		
-		//Si un seul maximum, on le connais déjà, cas simple
-		if (nb == 1) {
-			if (a==0) {
-				return up; }
-			if (a==1) {
-				return down; }
-			if (a==2) {
-				return left; }
-			else {
-				return right; }
-		}
-		
-		//Sinon on parcourt la liste et toutes les abscisses égales au dernier maximum sont stockées
-			//M va stocker les indices des nb maxima de Q
-		M = malloc(sizeof(int)*nb);
+		//M va stocker les indices des nb maxima de Q
+		int M = malloc(sizeof(int)*nb);
 		int p = 0;
 
+		//On parcourt la ligne de Q, quand égal au maximum, on stocke
 		for (int i=1; i<4; i++) {
 			if (m==Q[state_row*cols+state_col][i]) {
 				M[p] = i;
@@ -63,6 +52,7 @@ enum action eps_greedy(float epsilon) {
 			}
 		}
 		
+		//On choisit au hasard un des indices
 		r = rand() % nb;
 		a = M[r];
 		
