@@ -205,17 +205,17 @@ void InitMorpion() {
 	}
 }
 
+/*  //Paramètres de Reinforcement Learning
+	float epsilon = 0.5;
+  	float alpha = 0.5;
+  	float gamma = 0.5; */
 
 int main() {
 	InitMorpion();
-
-	//Paramètres de Reinforcement Learning
-	float epsilon = 0.5;
-  	float alpha = 0.5;
-  	float gamma = 0.5;
+	morpion_render();
 	
 	QInitialisation();
-	Q_render(0,20);
+	Q_render(6550,6570);
 
 	free(Morpion);
 	free(Q);
