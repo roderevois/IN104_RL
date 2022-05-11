@@ -44,7 +44,7 @@ void rand_move() {
 	int col = rand() % 3;
 	printf("col = %d\n",col);
 	while (Morpion[row][col]!=0) {
-		srand(time(0));
+		srand(rand()%1908);
 		int row2 = rand() % 3;
 		int col2 = rand() % 3;
 		if ((row != row2) && (col != col2)) {
