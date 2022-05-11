@@ -131,13 +131,22 @@ int is_winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si l
 
 //Affiche la matrice Q entre les lignes start line et end line
 void Q_render(int sline, int eline){
-     for (int i=sline; i<eline; i++) {
-         for (int j=0; j<9; j++){
-             printf("%f ", Q[i][j]);
-         }
-         printf("\n");
-     }
-     printf("\n");
+
+	if (sline > eline) {
+		exit(1);
+	}
+
+	if (sline<0) {
+		exit(2);
+	}
+
+    for (int i=sline; i<eline; i++) {
+        for (int j=0; j<9; j++){
+            printf("%f ", Q[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
 }
 
 //Affiche la grille de morpion actuelle
@@ -199,7 +208,13 @@ void InitMorpion() {
 int main() {
 	InitMorpion();
 
+	//Paramètres de Reinforcement Learning
+	float epsilon = 0.5;
+  	float alpha = 0.5;
+  	float gamma = 0.5;
 	
+	QInitialisation();
+	Q_render(0,20);
 
 	free(Morpion);
 	free(Q);
