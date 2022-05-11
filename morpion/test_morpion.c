@@ -72,6 +72,14 @@ int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si l
 	}
 }
 
+void Morpion_Reset() {
+	for (int i=0; i<3; i++) {
+		for (int j=0; j<3; j++) {
+			Morpion[i][j] = 0;
+		}
+	}
+}
+
 int main() {
 	int i;
 	InitMorpion();
@@ -81,8 +89,8 @@ int main() {
 	Morpion[1][2] = 2;
 	Morpion[0][2] = 1;
 	morpion_render();
-	i = Is_Winning();
-	printf("i = %d\n",i);
+	Morpion_Reset();
+	morpion_render();
 	return 0;
 	
 }

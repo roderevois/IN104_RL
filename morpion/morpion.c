@@ -121,7 +121,7 @@ int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si l
 		return (Morpion[0][0]);
 	}
 	if ((Morpion[0][2]==Morpion[1][1]) && (Morpion[1][1]==Morpion[2][0])) {
-		return (Morpion[1][0]);
+		return (Morpion[1][1]);
 	}
 	
 	else {
@@ -206,7 +206,11 @@ void Init_Morpion() {
 }
 
 void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
+	
+	for (int i = 0; i<i_max; i++) {
 
+
+	}
 }
 
 int main() 
