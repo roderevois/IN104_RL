@@ -212,6 +212,8 @@ void Rand_Move() {
 			col = col2;
 		}
 	}
+
+	Morpion[row][col] = 2;
 }
 
 void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
@@ -230,28 +232,32 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		
 		//Reset en début de boucle
 		Morpion_Reset();
-		printf("i = %d\n",i);
 		Win = 0;
 
+		printf("i = %d\n",i);
+		
 		//Corps de l'algorithme de QLearning
 		while(Win == 0) {
 
 			sub_tour = tour;
 
 			if (sub_tour == 0) { //L'agent joue
-				printf("Agent\n");
+				
+				
+
 			}
 
 			else { //L'agent aléatoire joue
-				printf("Aléatoire\n");
+				
+				//Mise à jour du morpion
+				Rand_Move();
+
 			}
 
-			printf("On avance\n");
 			//Si un vainqueur est trouvé on sort de la boucle
-			Win = 1; //Is_Winning();
+			Win = Is_Winning();
 		}
 
-		printf("Sortie de Boucle\n");
 		//Mise à jour des compteurs
 		if (Win == 1) { //L'agent prend a les croix (1)
 			vict_q = vict_q + 1;
