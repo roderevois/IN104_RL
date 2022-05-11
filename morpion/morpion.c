@@ -191,7 +191,7 @@ void Q_Render(int sline, int eline){
 //Propose un random move pour l'adversaire
 void Rand_Move() {
 
-	Morpion_Render();
+	//Morpion_Render();
 	int row2;
 	int col2;
 	int r;
@@ -214,6 +214,7 @@ void Rand_Move() {
 	}
 
 	Morpion[row][col] = 2;
+	Morpion_Render();
 }
 
 void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
@@ -235,15 +236,14 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		Win = 0;
 
 		printf("i = %d\n",i);
-		
+
+		sub_tour = tour;
+
 		//Corps de l'algorithme de QLearning
 		while(Win == 0) {
 
-			sub_tour = tour;
-
-			if (sub_tour == 0) { //L'agent joue
-				
-				
+			if ((sub_tour % 2) == 0) { //L'agent joue
+				printf("autre\n");
 
 			}
 
@@ -256,6 +256,8 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 
 			//Si un vainqueur est trouvé on sort de la boucle
 			Win = Is_Winning();
+
+			sub_tour = sub_tour + 1;
 		}
 
 		//Mise à jour des compteurs
@@ -265,6 +267,9 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		else { //L'adversaire aléatoire a les cercles (2)
 			vict_rand = vict_rand + 1;
 		}
+
+		printf("Morpion en sortie\n");
+		Morpion_Render();
 
 		//Le tour de commencer passe à l'autre
 		tour = (tour+1) % 2;
