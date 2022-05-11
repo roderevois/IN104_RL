@@ -169,17 +169,17 @@ void Morpion_Render() {
 }
 
 //Affiche la matrice Q entre les lignes start line et end line
-void Q_Render(int sline, int eline){
+void Q_Render(int s_line, int e_line){
 
-	if (sline > eline) {
+	if (s_line > e_line) {
 		exit(1);
 	}
 
-	if (sline<0) {
+	if (s_line<0) {
 		exit(2);
 	}
 
-    for (int i=sline; i<eline; i++) {
+    for (int i=s_line; i<e_line; i++) {
         for (int j=0; j<9; j++){
             printf("%f ", Q[i][j]);
         }
@@ -194,7 +194,7 @@ void Rand_Move() {
 	//Morpion_Render();
 	int row2;
 	int col2;
-	int r;
+	//int r;
 
 	srand(time(0));
 	int row = rand() % 3;
@@ -202,8 +202,8 @@ void Rand_Move() {
 
 	while (Morpion[row][col]!=0) {
 
-		r = rand() % 300;
-		srand(rand() % r);
+		//r = rand() % 300;
+		srand(time(0)); //rand() % r);
 		row2 = rand() % 3;
 		col2 = rand() % 3;
 
@@ -243,6 +243,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		while(Win == 0) {
 
 			if ((sub_tour % 2) == 0) { //L'agent joue
+				
 				printf("autre\n");
 
 			}
@@ -257,6 +258,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			//Si un vainqueur est trouvé on sort de la boucle
 			Win = Is_Winning();
 
+			//Au suivant
 			sub_tour = sub_tour + 1;
 		}
 
