@@ -18,7 +18,7 @@ int length = 19683;
 3^2 = 9 */
 
 //Initialisation
-void QInitialisation() {
+void Q_Initialisation() {
 
 	//Il y a 3⁹=19683 états possibles
 	Q = malloc(19683*sizeof(double *));
@@ -92,7 +92,7 @@ void QInitialisation() {
 	}	
 }
 
-int is_winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si les cercles l'emportent
+int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si les cercles l'emportent
 	
 	//Tests sur les colonnes
 	if ((Morpion[0][0]==Morpion[1][0]) && (Morpion[1][0]==Morpion[2][0])) {
@@ -130,7 +130,7 @@ int is_winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si l
 }
 
 //Affiche la matrice Q entre les lignes start line et end line
-void Q_render(int sline, int eline){
+void Q_Render(int sline, int eline){
 
 	if (sline > eline) {
 		exit(1);
@@ -150,7 +150,7 @@ void Q_render(int sline, int eline){
 }
 
 //Affiche la grille de morpion actuelle
-void morpion_render() {
+void Morpion_Render() {
     for (int i=0; i<3; i++) {
         for (int j=0; j<3; j++){
             printf("%d ", Morpion[i][j]);
@@ -161,9 +161,9 @@ void morpion_render() {
 }
 
 //Propose un random move pour l'adversaire
-void rand_move() {
+void Rand_Move() {
 
-	morpion_render();
+	Morpion_Render();
 	int row2;
 	int col2;
 	int r;
@@ -187,7 +187,7 @@ void rand_move() {
 }
 
 //Création et initialisation de la matrice du morpion
-void InitMorpion() {
+void Init_Morpion() {
 	Morpion = malloc(3*sizeof(int));
 
 	for (int i=0; i<3; i++) {
@@ -205,19 +205,28 @@ void InitMorpion() {
 	}
 }
 
-/*  //Paramètres de Reinforcement Learning
+void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
+
+}
+
+int main() 
+{
+	Init_Morpion();
+	Morpion_Render();
+	
+	//Paramètres de Reinforcement Learning
+	int i_max = 10;
 	float epsilon = 0.5;
   	float alpha = 0.5;
-  	float gamma = 0.5; */
+  	float gamma = 0.5;
 
-int main() {
-	InitMorpion();
-	morpion_render();
-	
-	QInitialisation();
-	Q_render(6550,6570);
+	Q_Initialisation();
+	Q_Render(5050,5070);
 
+	Q_Training(i_max,epsilon,alpha,gamma);
+
+	Q_Render(5050,5070);
 	free(Morpion);
 	free(Q);
 	return 0;
-	}
+}

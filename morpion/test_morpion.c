@@ -35,43 +35,54 @@ void morpion_render() {
     printf("\n");
 }
 
-//Propose un random move pour l'adversaire
-void rand_move() {
-
-	morpion_render();
-	int row2;
-	int col2;
-	int r;
-
-	srand(time(0));
-	int row = rand() % 3;
-	printf("row = %d\n",row);
-	int col = rand() % 3;
-	printf("col = %d\n",col);
-	while (Morpion[row][col]!=0) {
-		r = rand() % 300;
-		srand(rand() % r);
-		row2 = rand() % 3;
-		printf("row2 = %d\n",row2);
-		col2 = rand() % 3;
-		if ((row != row2) && (col != col2)) {
-			printf("yes\n");
-			row = row2;
-			col = col2;
-		}
+int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si les cercles l'emportent
+	
+	//Tests sur les colonnes
+	if ((Morpion[0][0]==Morpion[1][0]) && (Morpion[1][0]==Morpion[2][0])) {
+		return (Morpion[0][0]);
 	}
-	printf("sortie de boucle\n");
-	printf("row = %d\n",row);
-	printf("col = %d\n",col);
+	if ((Morpion[0][1]==Morpion[1][1]) && (Morpion[1][1]==Morpion[2][1])) {
+		return (Morpion[0][1]);
+	}
+	if ((Morpion[0][2]==Morpion[1][2]) && (Morpion[1][2]==Morpion[2][2])) {
+		return (Morpion[0][2]);
+	}
+	
+	//Tests sur les lignes
+	if ((Morpion[0][0]==Morpion[0][1]) && (Morpion[0][1]==Morpion[0][2])) {
+		return (Morpion[0][0]);
+	}
+	if ((Morpion[1][0]==Morpion[1][1]) && (Morpion[1][1]==Morpion[1][2])) {
+		return (Morpion[1][0]);
+	}
+	if ((Morpion[2][0]==Morpion[2][1]) && (Morpion[2][1]==Morpion[2][2])) {
+		return (Morpion[2][0]);
+	}
+	
+	//Test des diagonales
+	if ((Morpion[0][0]==Morpion[1][1]) && (Morpion[1][1]==Morpion[2][2])) {
+		return (Morpion[0][0]);
+	}
+	if ((Morpion[0][2]==Morpion[1][1]) && (Morpion[1][1]==Morpion[2][0])) {
+		return (Morpion[1][1]);
+	}
+	
+	else {
+		return 0;
+	}
 }
 
 int main() {
+	int i;
 	InitMorpion();
 	Morpion[0][1] = 1;
-	Morpion[1][1] = 2;
+	Morpion[1][1] = 1;
 	Morpion[2][0] = 1;
 	Morpion[1][2] = 2;
-	rand_move();
+	Morpion[0][2] = 1;
+	morpion_render();
+	i = Is_Winning();
+	printf("i = %d\n",i);
 	return 0;
 	
 }
