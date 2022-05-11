@@ -45,10 +45,13 @@ void rand_move() {
 	printf("col = %d\n",col);
 	while (Morpion[row][col]!=0) {
 		srand(time(0));
-		int row = rand() % 3;
-		printf("row = %d\n",row);
-		int col = rand() % 3;
-		printf("col = %d\n",col);
+		int row2 = rand() % 3;
+		int col2 = rand() % 3;
+		if ((row != row2) && (col != col2)) {
+			printf("yes\n");
+			row = row2;
+			col = col2;
+		}
 	}
 	printf("sortie de boucle\n");
 }
