@@ -38,6 +38,8 @@ void morpion_render() {
 //Propose un random move pour l'adversaire
 void rand_move() {
 	morpion_render();
+	int row2;
+	int col2;
 	srand(time(0));
 	int row = rand() % 3;
 	printf("row = %d\n",row);
@@ -45,8 +47,8 @@ void rand_move() {
 	printf("col = %d\n",col);
 	while (Morpion[row][col]!=0) {
 		srand(rand()%1908);
-		int row2 = rand() % 3;
-		int col2 = rand() % 3;
+		row2 = rand() % 3;
+		col2 = rand() % 3;
 		if ((row != row2) && (col != col2)) {
 			printf("yes\n");
 			row = row2;
@@ -54,6 +56,8 @@ void rand_move() {
 		}
 	}
 	printf("sortie de boucle\n");
+	printf("row = %d\n",row2);
+	printf("col = %d\n",col2);
 }
 
 int main() {

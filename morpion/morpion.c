@@ -142,7 +142,27 @@ void Q_render(int sline, int eline){
 
 //Propose un random move pour l'adversaire
 void rand_move() {
-
+	morpion_render();
+	int row2;
+	int col2;
+	srand(time(0));
+	int row = rand() % 3;
+	//printf("row = %d\n",row);
+	int col = rand() % 3;
+	//printf("col = %d\n",col);
+	while (Morpion[row][col]!=0) {
+		srand(rand()%1908);
+		row2 = rand() % 3;
+		col2 = rand() % 3;
+		if ((row != row2) && (col != col2)) {
+			//printf("yes\n");
+			row = row2;
+			col = col2;
+		}
+	}
+	//printf("sortie de boucle\n");
+	//printf("row = %d\n",row2);
+	//printf("col = %d\n",col2);
 }
 
 //Création et initialisation de la matrice du morpion
@@ -163,7 +183,6 @@ void InitMorpion() {
 		}
 	}
 }
-
 
 
 int main() {
