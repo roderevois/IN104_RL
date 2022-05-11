@@ -140,6 +140,17 @@ void Q_render(int sline, int eline){
      printf("\n");
 }
 
+//Affiche la grille de morpion actuelle
+void morpion_render() {
+    for (int i=0; i<3; i++) {
+        for (int j=0; j<3; j++){
+            printf("%d ", Morpion[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 //Propose un random move pour l'adversaire
 void rand_move() {
 	morpion_render();
@@ -186,7 +197,8 @@ void InitMorpion() {
 
 
 int main() {
-	
+	InitMorpion();
+
 	
 
 	free(Morpion);
