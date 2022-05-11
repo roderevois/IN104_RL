@@ -129,6 +129,45 @@ int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si l
 	}
 }
 
+//Création et initialisation de la matrice du morpion
+void Init_Morpion() {
+	Morpion = malloc(3*sizeof(int));
+
+	for (int i=0; i<3; i++) {
+		Morpion[i] = malloc(3*sizeof(int));
+	}
+
+	if (Morpion == NULL) {
+		printf("Failed to create Morpion matrix");
+		}
+
+	for (int i=0; i<3; i++) {
+		for (int j=0; j<3; j++) {
+			Morpion[i][j] = 0;
+		}
+	}
+}
+
+//Remet la grille à 0
+void Morpion_Reset() {
+	for (int i=0; i<3; i++) {
+		for (int j=0; j<3; j++) {
+			Morpion[i][j] = 0;
+		}
+	}
+}
+
+//Affiche la grille de morpion actuelle
+void Morpion_Render() {
+    for (int i=0; i<3; i++) {
+        for (int j=0; j<3; j++){
+            printf("%d ", Morpion[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 //Affiche la matrice Q entre les lignes start line et end line
 void Q_Render(int sline, int eline){
 
@@ -143,17 +182,6 @@ void Q_Render(int sline, int eline){
     for (int i=sline; i<eline; i++) {
         for (int j=0; j<9; j++){
             printf("%f ", Q[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
-
-//Affiche la grille de morpion actuelle
-void Morpion_Render() {
-    for (int i=0; i<3; i++) {
-        for (int j=0; j<3; j++){
-            printf("%d ", Morpion[i][j]);
         }
         printf("\n");
     }
@@ -186,30 +214,54 @@ void Rand_Move() {
 	}
 }
 
-//Création et initialisation de la matrice du morpion
-void Init_Morpion() {
-	Morpion = malloc(3*sizeof(int));
-
-	for (int i=0; i<3; i++) {
-		Morpion[i] = malloc(3*sizeof(int));
-	}
-
-	if (Morpion == NULL) {
-		printf("Failed to create Morpion matrix");
-		}
-
-	for (int i=0; i<3; i++) {
-		for (int j=0; j<3; j++) {
-			Morpion[i][j] = 0;
-		}
-	}
-}
-
 void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 	
+	//A qui le tour, on fait commencer chacun son tour les adversaires
+	int tour = 0;
+	int sub_tour;
+
+	//Compteur de victoires
+	int vict_rand = 0;
+	int vict_q = 0;
+
+	int Win;
+
 	for (int i = 0; i<i_max; i++) {
+		
+		//Reset en début de boucle
+		Morpion_Reset();
+		printf("i = %d\n",i);
+		Win = 0;
 
+		//Corps de l'algorithme de QLearning
+		while(Win == 0) {
 
+			sub_tour = tour;
+
+			if (sub_tour == 0) { //L'agent joue
+				printf("Agent\n");
+			}
+
+			else { //L'agent aléatoire joue
+				printf("Aléatoire\n");
+			}
+
+			printf("On avance\n");
+			//Si un vainqueur est trouvé on sort de la boucle
+			Win = 1; //Is_Winning();
+		}
+
+		printf("Sortie de Boucle\n");
+		//Mise à jour des compteurs
+		if (Win == 1) { //L'agent prend a les croix (1)
+			vict_q = vict_q + 1;
+		}
+		else { //L'adversaire aléatoire a les cercles (2)
+			vict_rand = vict_rand + 1;
+		}
+
+		//Le tour de commencer passe à l'autre
+		tour = (tour+1) % 2;
 	}
 }
 
