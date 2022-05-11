@@ -3,8 +3,10 @@
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
+#include <stdio.h>
 
 double** Q;
+int** Morpion;
 int length = 19683;
 /*Valeurs utiles
 3^8 = 6561
@@ -23,10 +25,11 @@ void QInitialisation() {
 	for (int i=0; i<19683; i++) {
 		//9 actions possibles : placer dans chaque case
 		Q[i] = malloc(9*sizeof(double));
-		}
+	}
+
 	if (Q == NULL) {
 		printf("Failed to create Q matrix");
-		}
+	}
 	
 	int indice;
 	
@@ -41,32 +44,42 @@ void QInitialisation() {
 								for (int a8 = 0; a8<3; a8++) {
 									for (int a9 = 0; a9<3; a9++) {
 		
-		//Hash
+		//Hash désignant l'état
 		indice = 6561*a1 + 2187*a2 + 729*a3 + 243*a4 + 81*a5 + 27*a6 + 9*a7 + 3*a8 + a9;
 		
-		//Initialisation optimiste de toutes les cases non occupées
+		//On se place dans chaque état possible : Initialisation optimiste de toutes les cases
 		for (int i = 0; i<9; i++) {
-			Q[indice][i] = 1; }
+			Q[indice][i] = 1; 
+		}
 		
 		//Pénalisation des cases occupées qu'on a pas envie de tirer comme action si la méthode du maximum est utilisée
-		if (a9 != 0) {
-			Q[indice][8] = 0; }
+		if (a9 != 0) { //Case du bas droite = 9ème colonne
+			Q[indice][8] = 0; 
+		}
 		if (a8 != 0) {
-			Q[indice][7] = 0; }
+			Q[indice][7] = 0; 
+		}
 		if (a7 != 0) {
-			Q[indice][6] = 0; }
+			Q[indice][6] = 0; 
+		}
 		if (a6 != 0) {
-			Q[indice][5] = 0; }
+			Q[indice][5] = 0; 
+		}
 		if (a5 != 0) {
-			Q[indice][4] = 0; }
+			Q[indice][4] = 0; 
+		}
 		if (a4 != 0) {
-			Q[indice][3] = 0; }
+			Q[indice][3] = 0; 
+		}
 		if (a3 != 0) {
-			Q[indice][2] = 0; }
+			Q[indice][2] = 0; 
+		}
 		if (a2 != 0) {
-			Q[indice][1] = 0; }
-		if (a1 != 0) {
-			Q[indice][0] = 0; }
+			Q[indice][1] = 0; 
+		}
+		if (a1 != 0) { //Case haut droite = 1ère colonne
+			Q[indice][0] = 0; 
+		}
 		
 									}
 								}
@@ -76,11 +89,10 @@ void QInitialisation() {
 				}
 			}
 		}
-	}
-		
+	}	
 }
 
-int is_winning(int* Morpion) { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si les cercles l'emportent
+int is_winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si les cercles l'emportent
 	
 	//Tests sur les colonnes
 	if ((Morpion[0][0]==Morpion[1][0]) && (Morpion[1][0]==Morpion[2][0])) {
@@ -117,12 +129,48 @@ int is_winning(int* Morpion) { //Renvoie 0 si pas de gagnant, 1 si les croix gag
 	}
 }
 
+//Affiche la matrice Q entre les lignes start line et end line
+void Q_render(int sline, int eline){
+     for (int i=sline; i<eline; i++) {
+         for (int j=0; j<9; j++){
+             printf("%f ", Q[i][j]);
+         }
+         printf("\n");
+     }
+     printf("\n");
+}
+
+//Propose un random move pour l'adversaire
+void rand_move() {
+
+}
+
+//Création et initialisation de la matrice du morpion
+void InitMorpion() {
+	Morpion = malloc(3*sizeof(int));
+
+	for (int i=0; i<3; i++) {
+		Morpion[i] = malloc(3*sizeof(int));
+	}
+
+	if (Morpion == NULL) {
+		printf("Failed to create Morpion matrix");
+		}
+
+	for (int i=0; i<3; i++) {
+		for (int j=0; j<3; j++) {
+			Morpion[i][j] = 0;
+		}
+	}
+}
 
 
 
 int main() {
 	
 	
+
+	free(Morpion);
 	free(Q);
 	return 0;
 	}

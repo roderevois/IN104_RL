@@ -36,7 +36,69 @@ enum action eps_greedy(float epsilon) {
 			return right; }
 		}
 	}
-	
+
+/*
+enum action eps_greedy(float epsilon) {
+
+	srand(time(NULL));
+	int r = 0;
+	int a = 0;
+	r = rand() % 1000;
+	if (r<=epsilon*1000) { //Action aléatoire
+		
+		return (enum action)(rand() % number_actions); }
+		
+	else { //On choisit une action qui maximise Q
+		
+		int nb = 1;
+		float m = Q[state_row*cols+state_col][0];
+		
+		for (int i=1; i<4; i++) {
+			
+			//Compte du nombre de maxima nb
+			//Nouveau maximum au dessus des autres
+			if (m<Q[state_row*cols+state_col][i]) {
+				m = Q[state_row*cols+state_col][i];
+				nb = 1;
+				a = i;
+			}
+			
+			//Si égalité, un de plus
+			if (m==Q[state_row*cols+state_col][i]) {
+				nb = nb+1;
+			}
+		}
+		
+		//M va stocker les indices des nb maxima de Q
+		int* M = malloc(sizeof(int)*nb);
+		int p = 0;
+
+		//On parcourt la ligne de Q, quand égal au maximum, on stocke
+		for (int i=1; i<4; i++) {
+			if (m==Q[state_row*cols+state_col][i]) {
+				M[p] = i;
+				p = p+1;
+			}
+		}
+		
+		//On choisit au hasard un des indices
+		r = rand() % nb;
+		a = M[r];
+		
+		free(M);
+		
+		if (a==0) {
+			return up; }
+		if (a==1) {
+			return down; }
+		if (a==2) {
+			return left; }
+		else {
+			return right; }
+	}
+}
+*/
+
 //Implémentation de la fonction Q-learning
 //Initialisation
 void QInitialisation() {
