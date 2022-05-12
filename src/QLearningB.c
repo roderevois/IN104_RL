@@ -19,7 +19,7 @@ enum action eps_greedy(float epsilon) {
 		
 	else { //On choisit une action qui maximise Q
 		
-		float m = Q[state_row*cols+state_col][0];
+		double m = Q[state_row*cols+state_col][0];
 		for (int i=1; i<4; i++) {
 			
 			if (m<Q[state_row*cols+state_col][i]) {
@@ -129,7 +129,7 @@ void QTraining (int i_max, float epsilon, float alpha, float gamma) {
 	
 	for (int i = 0; i<i_max; i++) {
 		
-		epsilon = 0.5*(1 - (float)i/((float)i_max-1));
+		//epsilon = 0.5*(1 - (float)i/((float)i_max-1));
 		//printf("epsilon = %2f\n",epsilon);
 		printf("i = %d\n",i);
 		maze_reset();

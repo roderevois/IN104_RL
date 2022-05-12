@@ -17,6 +17,12 @@ int length = 19683;
 //Nombre aléatoire de début de chaine
 int r;
 
+//Variables de renvoi de position
+int move_row_x;
+int move_col_x;
+int move_row_o;
+int move_col_o;
+
 /*
 Quelques valeurs utiles
 3^8 = 6561
@@ -140,6 +146,17 @@ int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si l
 	}
 }
 
+int Is_Drawing() { //Renvoie 0 si il reste des cases libres, 1 sinon
+	for (int i=0; i<3; i++){
+		for (int j=0; j<3; j++){
+			if (Morpion[i][j]==0){
+				return 0;
+			}
+		}
+	}
+	return 1;
+}
+
 //Création et initialisation de la matrice du morpion
 void Init_Morpion() {
 	Morpion = malloc(3*sizeof(int));
@@ -232,7 +249,113 @@ void Rand_Move(int id) {
 
 	}
 
-	Morpion[row][col] = id;
+	if (id == 1) {
+		move_row_x = row;
+		move_col_x = col;
+	}
+	else {
+		move_row_o = row;
+		move_col_o = col;
+	}
+}
+
+//Fonction de policy
+void eps_greedy(float epsilon) {
+	
+	srand(r);
+	r = rand();
+	int rd = rand() % 1000;
+
+	if (rd<=epsilon*1000) { //Action aléatoire
+		
+		 Rand_Move(1);
+	}
+	
+	//On choisit une action qui maximise Q
+	else {
+
+		int nb;
+		int indice;
+		int a;
+
+		//Recherche de la ligne dans Q
+		indice = 6561*Morpion[0][0] + 2187*Morpion[0][1] + 729*Morpion[0][2] + 243*Morpion[1][0] + 81*Morpion[1][1] + 27*Morpion[1][2] + 9*Morpion[2][0] + 3*Morpion[2][2] + Morpion[2][2];
+		double m = Q[indice][0];
+
+		for (int i=1; i<9; i++) {
+			
+			//Compte du nombre de maxima nb
+			//Cas nouveau maximum au dessus des autres
+			if (m<Q[indice][i]) {
+				m = Q[indice][i];
+				nb = 1;
+			}
+			
+			//Cas égalité : un maximum de plus
+			if (m==Q[indice][i]) {
+				nb = nb + 1;
+			}
+		}
+		
+		//M stocke les indices maxima de Q
+		int* M = malloc(sizeof(int)*nb);
+		int p = 0;
+
+		//On parcourt la ligne de Q, quand égal au maximum, on stocke
+		for (int i=1; i<9; i++) {
+
+			if (m==Q[indice][i]) {
+				M[p] = i;
+				p = p+1;
+
+			}
+		}
+		
+		//On choisit au hasard un des indices
+		srand(r);
+		r = rand();
+		rd = rand() % nb; //rd compris entre 0 et nb-1
+		a = M[rd];
+		
+		free(M);
+		
+		if (a==0) {
+			move_row_x = 0;
+			move_col_x = 0;
+		}
+		if (a==1) {
+			move_row_x = 0;
+			move_col_x = 1;
+		}
+		if (a==2) {
+			move_row_x = 0;
+			move_col_x = 2;
+		}
+		if (a==3) {
+			move_row_x = 1;
+			move_col_x = 0;
+		}
+		if (a==4) {
+			move_row_x = 1;
+			move_col_x = 1;
+		}
+		if (a==5) {
+			move_row_x = 1;
+			move_col_x = 2;
+		}
+		if (a==6) {
+			move_row_x = 2;
+			move_col_x = 0;
+		}
+		if (a==7) {
+			move_row_x = 2;
+			move_col_x = 1;
+		}
+		if (a==8) {
+			move_row_x = 2;
+			move_col_x = 2;
+		}
+	}
 }
 
 void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
@@ -250,23 +373,26 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 	int vict_q = 0;
 
 	int Win;
+	int Drw;
 
 	for (int i = 0; i<i_max; i++) {
 		
 		//Reset en début de boucle
 		Morpion_Reset();
 		Win = 0;
+		Drw = 0;
 
 		printf("i = %d\n",i);
 
 		sub_tour = tour;
 
 		//Corps de l'algorithme de QLearning
-		while(Win == 0) {
+		while(Win == 0 && Drw == 0) {
 
 			if ((sub_tour % 2) == 0) { //L'agent joue
 				
-				
+				eps_greedy(epsilon);
+				Morpion[move_row_x][move_col_x] = 1;
 
 			}
 
@@ -274,26 +400,34 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 				
 				//Mise à jour du morpion
 				Rand_Move(2);
+				Morpion[move_row_o][move_col_o] = 2;
 
 			}
 
 			//Si un vainqueur est trouvé on sort de la boucle
 			Win = Is_Winning();
 
+			//Si la matrice est pleine on sort de la boucle
+			Drw = Is_Drawing();
+
 			//Au suivant
 			sub_tour = sub_tour + 1;
+
+			Morpion_Render();
 		}
 
 		//Mise à jour des compteurs
 		if (Win == 1) { //L'agent prend a les croix (1)
 			vict_q = vict_q + 1;
 		}
-		else { //L'adversaire aléatoire a les cercles (2)
+		if (Win == 2) { //L'adversaire aléatoire a les cercles (2)
 			vict_rand = vict_rand + 1;
 		}
 
 		printf("Morpion en sortie :\n");
 		Morpion_Render();
+		printf("Drw = %d\n",Drw);
+		printf("Win = %d\n\n",Win);
 
 		//Le tour de commencer passe à l'autre
 		tour = (tour+1) % 2;
