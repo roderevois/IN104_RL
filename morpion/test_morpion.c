@@ -5,8 +5,7 @@
 #include <stdio.h>
 
 int** Morpion;
-int** AleatoireC;
-int** AleatoireR;
+int r;
 
 //Création et initialisation de la matrice du morpion
 void InitMorpion() {
@@ -37,6 +36,7 @@ void morpion_render() {
     printf("\n");
 }
 
+/*
 void Rand_Crea() {
 	int** AleatoireC = malloc(9*sizeof(int *));
 	int** AleatoireR = malloc(9*sizeof(int *));
@@ -46,35 +46,42 @@ void Rand_Crea() {
 		AleatoireR[i] = malloc(9*sizeof(int));
 	}
 
-	AleatoireR[0] = [2,2,0,0,0,1,1,1,2];
+	AleatoireR[0][0]=2,AleatoireR[0][1]=2,AleatoireR[0][2]=0,AleatoireR[0][3]=
+
+
+	[2,2,0,0,0,1,1,1,2];
 	AleatoireC[0] = [1,2,1,2,0,0,1,2,0];
-}
+} */
 
-void Rand_Move() {
+void Rand_Move(int id) {
 
-	//Morpion_Render();
 	int row2;
 	int col2;
 
-	srand(time(0));
+	srand(r);
+	r = rand();
 	int row = rand() % 3;
 	int col = rand() % 3;
+	printf("row = %d\n",row);
+	printf("col = %d\n\n",col);
 
 	while (Morpion[row][col]!=0) {
 
-		//r = rand() % 300;
-		srand(time(0)); //rand() % r);
+		srand(r);
+		r = rand();
 		row2 = rand() % 3;
 		col2 = rand() % 3;
+		printf("row2 = %d\n",row2);
+		printf("col2 = %d\n\n",col2);
 
 		if ((row != row2) && (col != col2)) {
 			row = row2;
 			col = col2;
 		}
+
 	}
 
-	Morpion[row][col] = 2;
-	morpion_render();
+	Morpion[row][col] = id;
 }
 
 int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si les cercles l'emportent
@@ -124,21 +131,21 @@ void Morpion_Reset() {
 
 int main() {
 	int i;
+	srand(time(0));
+	r = rand();
 	InitMorpion();
 	Morpion[0][1] = 1;
 	Morpion[1][1] = 1;
-	Morpion[2][0] = 1;
+	Morpion[2][0] = 2;
 	Morpion[1][2] = 2;
 	Morpion[0][2] = 1;
 	morpion_render();
 	
-	Rand_Crea();
-	printf("%d\n",AleatoireR[0][5]);
+	Rand_Move(2);
+	printf("bis\n");
+	Rand_Move(2);
 
-	morpion_render();
 	free(Morpion);
-	free(AleatoireR);
-	free(AleatoireC);
 	return 0;
 	
 }

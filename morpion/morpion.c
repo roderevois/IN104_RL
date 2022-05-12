@@ -188,22 +188,23 @@ void Q_Render(int s_line, int e_line){
     printf("\n");
 }
 
-//Propose un random move pour l'adversaire
-void Rand_Move() {
+//Propose un placement aléatoire pour l'adversaire
+//L'utilisation des fonctions rand() et srand(time) sont inefficaces ici puisque la seed dépendant du temps,
+//sont plus rapides que l'évolution de l'horloge et donc l'aléatoire en est biasé; On passe par une autre possibilité,
+//qui est de tirer un premier nombre aléatoire renvoyant à une liste d'ordre de positions à considérer.
+void Rand_Move(int id) {
 
-	//Morpion_Render();
 	int row2;
 	int col2;
-	//int r;
 
 	srand(time(0));
 	int row = rand() % 3;
 	int col = rand() % 3;
 
+
 	while (Morpion[row][col]!=0) {
 
-		//r = rand() % 300;
-		srand(time(0)); //rand() % r);
+		srand(rand());
 		row2 = rand() % 3;
 		col2 = rand() % 3;
 
@@ -213,8 +214,7 @@ void Rand_Move() {
 		}
 	}
 
-	Morpion[row][col] = 2;
-	Morpion_Render();
+	Morpion[row][col] = id;
 }
 
 void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
@@ -242,6 +242,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		//Corps de l'algorithme de QLearning
 		while(Win == 0) {
 
+			srand(rand());
 			if ((sub_tour % 2) == 0) { //L'agent joue
 				
 				printf("autre\n");
@@ -251,7 +252,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			else { //L'agent aléatoire joue
 				
 				//Mise à jour du morpion
-				Rand_Move();
+				Rand_Move(2);
 
 			}
 
