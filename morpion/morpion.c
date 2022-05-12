@@ -5,17 +5,28 @@
 #include <time.h>
 #include <stdio.h>
 
+//Q Matrix
 double** Q;
+
+//Morpion
 int** Morpion;
+
+//Nombre de lignes de Q = Nombre d'états possibles d'un morpion 3⁹
 int length = 19683;
-/*Valeurs utiles
+
+//Nombre aléatoire de début de chaine
+int r;
+
+/*
+Quelques valeurs utiles
 3^8 = 6561
 3^7 = 2187
 3^6 = 729
 3^5 = 243
 3^4 = 81
 3^3 = 27
-3^2 = 9 */
+3^2 = 9 
+*/
 
 //Initialisation
 void Q_Initialisation() {
@@ -157,7 +168,6 @@ void Morpion_Reset() {
 	}
 }
 
-//Affiche la grille de morpion actuelle
 void Morpion_Render() {
     for (int i=0; i<3; i++) {
         for (int j=0; j<3; j++){
@@ -167,6 +177,7 @@ void Morpion_Render() {
     }
     printf("\n");
 }
+
 
 //Affiche la matrice Q entre les lignes start line et end line
 void Q_Render(int s_line, int e_line){
@@ -188,23 +199,29 @@ void Q_Render(int s_line, int e_line){
     printf("\n");
 }
 
-//Propose un placement aléatoire pour l'adversaire
-//L'utilisation des fonctions rand() et srand(time) sont inefficaces ici puisque la seed dépendant du temps,
-//sont plus rapides que l'évolution de l'horloge et donc l'aléatoire en est biasé; On passe par une autre possibilité,
-//qui est de tirer un premier nombre aléatoire renvoyant à une liste d'ordre de positions à considérer.
+/*
+Propose un placement aléatoire pour l'adversaire
+
+L'utilisation des fonctions rand() et srand(time(0)) sont inefficaces ici puisque dépendant du temps, l'exécution
+est plus rapide que l'évolution de l'horloge et donc l'aléatoire en est biasé; Fournissant les mêmes positions
+plusieurs parties d'affilées (le temps que l'horloge se mette à jour soit ~10-15 ms). On utilise une chaine de nombres
+mis à jour avec la seed précédent pour servir de seed pour le suivant. Cette suite de nombre est dépendante de
+de la seed initiale. 
+*/
 void Rand_Move(int id) {
 
 	int row2;
 	int col2;
 
-	srand(time(0));
+	srand(r);
+	r = rand();
 	int row = rand() % 3;
 	int col = rand() % 3;
 
-
 	while (Morpion[row][col]!=0) {
 
-		srand(rand());
+		srand(r);
+		r = rand();
 		row2 = rand() % 3;
 		col2 = rand() % 3;
 
@@ -212,6 +229,7 @@ void Rand_Move(int id) {
 			row = row2;
 			col = col2;
 		}
+
 	}
 
 	Morpion[row][col] = id;
@@ -222,6 +240,10 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 	//A qui le tour, on fait commencer chacun son tour les adversaires
 	int tour = 0;
 	int sub_tour;
+
+	//Initialisation de l'aléatoire
+	srand(time(0));
+	r = rand();
 
 	//Compteur de victoires
 	int vict_rand = 0;
@@ -242,10 +264,9 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		//Corps de l'algorithme de QLearning
 		while(Win == 0) {
 
-			srand(rand());
 			if ((sub_tour % 2) == 0) { //L'agent joue
 				
-				printf("autre\n");
+				
 
 			}
 
@@ -271,7 +292,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			vict_rand = vict_rand + 1;
 		}
 
-		printf("Morpion en sortie\n");
+		printf("Morpion en sortie :\n");
 		Morpion_Render();
 
 		//Le tour de commencer passe à l'autre

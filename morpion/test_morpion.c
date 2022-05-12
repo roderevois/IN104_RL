@@ -7,6 +7,9 @@
 int** Morpion;
 int r;
 
+int cxa;
+int cxb;
+
 //Création et initialisation de la matrice du morpion
 void InitMorpion() {
 	Morpion = malloc(3*sizeof(int));
@@ -26,7 +29,7 @@ void InitMorpion() {
 	}
 }
 
-void morpion_render() {
+void Morpion_Render() {
     for (int i=0; i<3; i++) {
         for (int j=0; j<3; j++){
             printf("%d ", Morpion[i][j]);
@@ -35,23 +38,6 @@ void morpion_render() {
     }
     printf("\n");
 }
-
-/*
-void Rand_Crea() {
-	int** AleatoireC = malloc(9*sizeof(int *));
-	int** AleatoireR = malloc(9*sizeof(int *));
-
-	for (int i=0; i<9; i++) {
-		AleatoireC[i] = malloc(9*sizeof(int));
-		AleatoireR[i] = malloc(9*sizeof(int));
-	}
-
-	AleatoireR[0][0]=2,AleatoireR[0][1]=2,AleatoireR[0][2]=0,AleatoireR[0][3]=
-
-
-	[2,2,0,0,0,1,1,1,2];
-	AleatoireC[0] = [1,2,1,2,0,0,1,2,0];
-} */
 
 void Rand_Move(int id) {
 
@@ -62,8 +48,6 @@ void Rand_Move(int id) {
 	r = rand();
 	int row = rand() % 3;
 	int col = rand() % 3;
-	printf("row = %d\n",row);
-	printf("col = %d\n\n",col);
 
 	while (Morpion[row][col]!=0) {
 
@@ -71,8 +55,6 @@ void Rand_Move(int id) {
 		r = rand();
 		row2 = rand() % 3;
 		col2 = rand() % 3;
-		printf("row2 = %d\n",row2);
-		printf("col2 = %d\n\n",col2);
 
 		if ((row != row2) && (col != col2)) {
 			row = row2;
@@ -83,6 +65,41 @@ void Rand_Move(int id) {
 
 	Morpion[row][col] = id;
 }
+
+//Fonction de policy
+/*void eps_greedy(float epsilon) {
+	int a = 0;
+	r = rand() % 1000;
+	if (r<=epsilon*1000) { //Action aléatoire
+		
+		return (enum action)(rand() % number_actions); 
+	}
+		
+	else { //On choisit une action qui maximise Q
+		
+		float m = Q[state_row*cols+state_col][0];
+		for (int i=1; i<4; i++) {
+			
+			if (m<Q[state_row*cols+state_col][i]) {
+				m = Q[state_row*cols+state_col][i];
+				a = i; 
+			}
+		}
+
+		if (a==0) {
+			return up; 
+		}
+		if (a==1) {
+			return down; 
+		}
+		if (a==2) {
+			return left; 
+		}
+		else {
+			return right; 
+		}
+	}
+}*/
 
 int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si les cercles l'emportent
 	
@@ -129,6 +146,7 @@ void Morpion_Reset() {
 	}
 }
 
+/*
 int main() {
 	int i;
 	srand(time(0));
@@ -139,7 +157,7 @@ int main() {
 	Morpion[2][0] = 2;
 	Morpion[1][2] = 2;
 	Morpion[0][2] = 1;
-	morpion_render();
+	Morpion_Render();
 	
 	Rand_Move(2);
 	printf("bis\n");
@@ -149,17 +167,34 @@ int main() {
 	return 0;
 	
 }
+*/
 
-/*printf("Premier nombre : %d\n",rand()%100);
+void fonction_test(float epsilon) {
+
+	srand(r);
+	r = rand();
+	int rd = rand() % 1000;
+
+	if (rd<=epsilon*1000) { //Action aléatoire
+		cxa = cxa + 1;
+	}
+	else {
+		cxb = cxb + 1;
+	}
+}
+
+int main() {
+
+	cxa = 0;
+	cxb = 0;
 	srand(time(0));
-	printf("Second nombre : %d\n",rand()%100);
-	srand(rand()%15089);
-	printf("3e nombre : %d\n",rand()%100);
-	srand(rand()%180919);
-	printf("4e nombre : %d\n",rand()%100);
-	srand(rand()%19610);
-	printf("5e nombre : %d\n",rand()%100);
-	srand(1);
-	printf("Premier nombre : %d\n",rand()%100);
-	srand(2);
-	printf("Second nombre : %d\n",rand()%9+1); */
+	r = rand();
+
+	float epsilon = 0.5;
+	for (int i=0; i<20000; i++) {
+			fonction_test(epsilon);
+	}
+	printf("cxa = %d\n",cxa);
+	printf("cxb = %d\n",cxb);
+	return 0;
+}
