@@ -15,7 +15,12 @@ int** Morpion;
 int length = 19683;
 
 //Nombre aléatoire de début de chaine
-int r;
+//int r;
+
+
+int op1 = 0;
+int op2 = 0;
+
 
 //Variables de renvoi de position
 int move_row_x;
@@ -238,15 +243,15 @@ void Rand_Move(int id) {
 	int row2;
 	int col2;
 
-	srand(r);
-	r = rand();
+	//srand(r);
+	//r = rand();
 	int row = rand() % 3;
 	int col = rand() % 3;
 
 	while (Morpion[row][col]!=0) {
 
-		srand(r);
-		r = rand();
+		//srand(r);
+		//r = rand();
 		row2 = rand() % 3;
 		col2 = rand() % 3;
 
@@ -278,8 +283,8 @@ void Morpion_Indice() {
 //Fonction de policy
 void eps_greedy(float epsilon) {
 	
-	srand(r);
-	r = rand();
+	//srand(r);
+	//r = rand();
 	int rd = rand() % 1000;
 
 	if (rd<=epsilon*1000) { //Action aléatoire
@@ -327,8 +332,8 @@ void eps_greedy(float epsilon) {
 		}
 		
 		//On choisit au hasard un des indices
-		srand(r);
-		r = rand();
+		//srand(r);
+		//r = rand();
 		rd = rand() % nb; //rd compris entre 0 et nb-1
 		a = M[rd];
 		
@@ -389,9 +394,10 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 	int tour = 0;
 	int sub_tour;
 
+
 	//Initialisation de l'aléatoire
-	srand(time(0));
-	r = rand();
+	
+	//r = rand();
 
 	//Compteur de victoires
 	int vict_rand = 0;
@@ -401,15 +407,21 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 	int Drw;
 
 	for (int i = 0; i<i_max; i++) {
+
+		/*
+		if (i > 1000) {
+			epsilon = epsilon/2;
+		}
+		*/
 		
 		//Reset en début de boucle
 		Morpion_Reset();
-		Morpion_Render();
+		//Morpion_Render();
 		Win = 0;
 		Drw = 0;
 		Morpion_Indice();
 
-		printf("i = %d\n",i);
+		//printf("i = %d\n",i);
 
 		sub_tour = tour;
 
@@ -441,7 +453,14 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			//MAJ de l'indice
 			Morpion_Indice();
 
-			//MAJ Q : Si il n'y a pas de gagnant ou d'égalité, dans ce cas la MAJ se fait hors de la boucle
+			if (indice == 2036) {
+				op1 = op1 +1;
+			}
+			if (indice == 4759) {
+				op2 = op2 +1;
+			}
+
+			//MAJ Q : Si il n'y a pas de gagnant ou d'égalité
 			if (Win == 0 && Drw == 0){
 				Q[prev_indice][3*move_col_x + move_col_x] = Q[prev_indice][3*move_col_x + move_col_x] + alpha*(gamma*Q_Max_Line(indice) - Q[prev_indice][3*move_col_x + move_col_x]);
 			}
@@ -474,10 +493,10 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		}
 
 
-		printf("Morpion en sortie :\n");
-		Morpion_Render();
-		printf("vict_rand = %d\n",vict_rand);
-		printf("vict_q = %d\n\n",vict_q);
+		//printf("Morpion en sortie :\n");
+		//Morpion_Render();
+		//printf("vict_rand = %d\n",vict_rand);
+		//printf("vict_q = %d\n\n",vict_q);
 
 		//Le tour de commencer passe à l'autre
 		tour = (tour+1) % 2;
@@ -488,19 +507,27 @@ int main()
 {
 	Init_Morpion();
 	Morpion_Render();
+
+	srand(time(0));
 	
 	//Paramètres de Reinforcement Learning
-	int i_max = 100000;
+	int i_max = 100000000;
 	float epsilon = 0.5;
-  	float alpha = 0.5;
-  	float gamma = 0.5;
+  	float alpha = 0.75;
+  	float gamma = 0.9;
 
 	Q_Initialisation();
 	Q_Render(0,20);
 
 	Q_Training(i_max,epsilon,alpha,gamma);
+	printf("QRender 2035-2037\n");
+	Q_Render(2035,2037);
 
-	Q_Render(0,20);
+	printf("QRender 4758-4760\n");
+	Q_Render(0,2000);
+
+	printf("op1 = %d\n",op1);
+	printf("op2 = %d\n",op2);
 	free(Morpion);
 	free(Q);
 	return 0;
