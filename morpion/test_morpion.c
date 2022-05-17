@@ -66,41 +66,6 @@ void Rand_Move(int id) {
 	Morpion[row][col] = id;
 }
 
-//Fonction de policy
-/*void eps_greedy(float epsilon) {
-	int a = 0;
-	r = rand() % 1000;
-	if (r<=epsilon*1000) { //Action aléatoire
-		
-		return (enum action)(rand() % number_actions); 
-	}
-		
-	else { //On choisit une action qui maximise Q
-		
-		float m = Q[state_row*cols+state_col][0];
-		for (int i=1; i<4; i++) {
-			
-			if (m<Q[state_row*cols+state_col][i]) {
-				m = Q[state_row*cols+state_col][i];
-				a = i; 
-			}
-		}
-
-		if (a==0) {
-			return up; 
-		}
-		if (a==1) {
-			return down; 
-		}
-		if (a==2) {
-			return left; 
-		}
-		else {
-			return right; 
-		}
-	}
-}*/
-
 int Is_Winning() { //Renvoie 0 si pas de gagnant, 1 si les croix gagnent, 2 si les cercles l'emportent
 	
 	//Tests sur les colonnes
