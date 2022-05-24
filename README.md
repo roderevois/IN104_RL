@@ -20,6 +20,7 @@ i_max : number of iterations
 epsilon : random factor  
 alpha   : learning rate  
 gamma   : actualization rate  
+  
 The initial parameters work perfectly though, and were found to be more or less the most optimized parameters for __our__ project.  
   
 The training can then be launched with the command while in the *src* depository :  

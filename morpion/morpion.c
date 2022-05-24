@@ -5,6 +5,19 @@
 #include <time.h>
 #include <stdio.h>
 
+//Paramètres de Reinforcement Learning
+int i_max = 1000000; //Nombre d'itérations
+float epsilon = 0.5;
+float alpha = 0.5;
+float gammaB = 0.5;
+
+//Afficher les résultats à la fin ?
+int Results = 1;
+//Afficher les grilles de morpion ?
+int ShowGrid = 0;
+
+/*--------------------------------------------------------------------------*/
+
 //Q Matrix
 double** Q;
 
@@ -384,7 +397,7 @@ double Q_Max_Line (int S_Indice) {
 	return m;
 }
 
-void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
+void Q_Training(float gamma) {
 	
 	//A qui le tour, on fait commencer chacun son tour les adversaires
 	int tour = 0;
@@ -398,7 +411,8 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 	//Compteur de victoires
 	int vict_rand = 0;
 	int vict_q = 0;
-
+	
+	//Variables de stockage du vainqueur et d'égalité
 	int Win;
 	int Drw;
 
@@ -408,16 +422,15 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			epsilon = 0.01;
 		}
 		
-		Morpion_Render();
-		
 		//Reset en début de boucle
 		Morpion_Reset();
-		//Morpion_Render();
 		Win = 0;
 		Drw = 0;
 		Morpion_Indice();
-
-		//printf("i = %d\n",i);
+		
+		if (ShowGrid == 1) {
+			Morpion_Render();
+		}
 
 		sub_tour = tour;
 
@@ -449,12 +462,12 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			//MAJ de l'indice
 			Morpion_Indice();
 
-			//MAJ Q : Si il n'y a pas de gagnant ou d'égalité ET que le joueur vient de jouer
+			//Mise à Jour de Q : Si il n'y a pas de gagnant ou d'égalité ET que le joueur vient de jouer
 			if (Win == 0 && Drw == 0 && (sub_tour % 2) == 0) {
 				Q[prev_indice][3*move_row_x + move_col_x] = Q[prev_indice][3*move_row_x + move_col_x] + alpha*(gamma*Q_Max_Line(indice) - Q[prev_indice][3*move_row_x + move_col_x]);
 			}
 
-			//Au suivant
+			//Au suivant !
 			sub_tour = sub_tour + 1;
 
 		}
@@ -488,12 +501,16 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		//Le tour de commencer passe à l'autre
 		tour = (tour+1) % 2;
 	}
-	printf("vict_rand = %d\n",vict_rand);
-	printf("vict_q = %d\n\n",vict_q);
-	printf("Pourcentage de victoires : %f\n",(float)vict_q/2000);
+	
+	if (Results == 1) {
+	printf("Nombre d'itérations = %d\n",i_max);
+	printf("Victoires Random / 200000 = %d\n",vict_rand);
+	printf("Victoires de Q / 200000 = %d\n\n",vict_q);
+	printf("Pourcentage de victoires Q : %f\n",(float)vict_q/2000);
+	}
 }
 
-void SARSA(int i_max, float epsilon, float alpha, float gamma) {
+void SARSA(float gamma) {
 	
 	//A qui le tour, on fait commencer chacun son tour les adversaires
 	int tour = 0;
@@ -520,7 +537,12 @@ void SARSA(int i_max, float epsilon, float alpha, float gamma) {
 		printf("i = %d\n",i);
 		//Reset en début de boucle
 		Morpion_Reset();
-		//Morpion_Render();
+		
+		
+		if (ShowGrid == 1) {
+			Morpion_Render();
+		}
+		
 		Win = 0;
 		Drw = 0;
 		Morpion_Indice();
@@ -611,8 +633,13 @@ void SARSA(int i_max, float epsilon, float alpha, float gamma) {
 		//Le tour de commencer passe à l'autre
 		tour = (tour+1) % 2;
 	}
-	printf("vict_rand = %d\n",vict_rand);
-	printf("vict_q = %d\n\n",vict_q);
+	
+	if (Results == 1) {
+	printf("Nombre d'itérations = %d\n",i_max);
+	printf("Victoires Random / 200000 = %d\n",vict_rand);
+	printf("Victoires de Q / 200000 = %d\n\n",vict_q);
+	printf("Pourcentage de victoires Q : %f\n",(float)vict_q/2000);
+	}
 }
 
 int main() 
@@ -622,16 +649,11 @@ int main()
 
 	srand(time(0));
 	
-	//Paramètres de Reinforcement Learning
-	int i_max = 1000000;
-	float epsilon = 0.5;
-  	float alpha = 0.5;
-  	float gamma = 0.5;
-
+	float gamma = gammaB;
 	Q_Initialisation();
 	Q_Render(0,20);
 
-	Q_Training(i_max,epsilon,alpha,gamma);
+	Q_Training(gamma);
 
 	free(Morpion);
 	free(Q);
