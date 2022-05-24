@@ -404,7 +404,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 
 	for (int i = 0; i<i_max; i++) {
 
-		if (i > 50000) {
+		if (i > i_max - 200000) {
 			epsilon = 0.01;
 		}
 		
@@ -450,7 +450,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 
 			//MAJ Q : Si il n'y a pas de gagnant ou d'égalité ET que le joueur vient de jouer
 			if (Win == 0 && Drw == 0 && (sub_tour % 2) == 0) {
-				Q[prev_indice][3*move_col_x + move_col_x] = Q[prev_indice][3*move_col_x + move_col_x] + alpha*(gamma*Q_Max_Line(indice) - Q[prev_indice][3*move_col_x + move_col_x]);
+				Q[prev_indice][3*move_row_x + move_col_x] = Q[prev_indice][3*move_row_x + move_col_x] + alpha*(gamma*Q_Max_Line(indice) - Q[prev_indice][3*move_row_x + move_col_x]);
 			}
 
 			//Au suivant
@@ -461,26 +461,26 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		//Mise à jour des compteurs
 		//On place un 1 (bonus) pour l'état et l'action de Q qui ont mené à cette égalité si l'agent a joué en dernier
 		if (Win == 1) {
-			if (i>50000) {
+			if (i>i_max-200000) {
 			vict_q = vict_q + 1;
 			}
 			if ((sub_tour) % 2 == 1) { //L'agent a joué
-				Q[prev_indice][3*move_col_x + move_col_x] = 2;
+				Q[prev_indice][3*move_row_x + move_col_x] = 2;
 			}
 		}
 		//On place un 0 (pénalisation) pour l'état et l'action de Q qui ont mené à cette égalité si l'agent a joué en dernier
 		if (Win == 2) {
-			if (i>50000) {
+			if (i>i_max-200000) {
 			vict_rand = vict_rand + 1;
 			}
 			if ((sub_tour) % 2 == 1) {
-				Q[prev_indice][3*move_col_x + move_col_x] = 0;
+				Q[prev_indice][3*move_row_x + move_col_x] = 0;
 			}
 		}
 		//On place un 0.5 pour l'état et l'action de Q qui ont mené à cette égalité si l'agent a joué en dernier
 		if (Win == 0) { //Egalité
 			if ((sub_tour) % 2 == 1) {
-				Q[prev_indice][3*move_col_x + move_col_x] = 0.5;
+				Q[prev_indice][3*move_row_x + move_col_x] = 0.5;
 			}
 		}
 
@@ -515,15 +515,13 @@ void SARSA(int i_max, float epsilon, float alpha, float gamma) {
 			epsilon = 0.01;
 		}
 		
-		
+		printf("i = %d\n",i);
 		//Reset en début de boucle
 		Morpion_Reset();
 		//Morpion_Render();
 		Win = 0;
 		Drw = 0;
 		Morpion_Indice();
-
-		//printf("i = %d\n",i);
 
 		sub_tour = tour;
 
@@ -537,9 +535,7 @@ void SARSA(int i_max, float epsilon, float alpha, float gamma) {
 		}
 
 		//Corps de l'algorithme de QLearning
-		while(Win == 0 && Drw == 0) {
-
-			prev_indice = indice;
+		while(Win == 0 && Drw == 0) { //L'indice est mis à jour dans la fonction indice
 
 			if ((sub_tour % 2) == 0) { //L'agent joue
 				Morpion[move_row_x][move_col_x] = 1;
@@ -570,6 +566,8 @@ void SARSA(int i_max, float epsilon, float alpha, float gamma) {
 
 			//Choix d'une action a' à considérer depuis la positions s' (la position actuelle)
 			if ((sub_tour % 2) == 0) { //C'est à l'agent de jouer
+				former_row_x = move_row_x;
+				former_col_x = move_col_x;
 				eps_greedy(epsilon);
 			}
 
@@ -577,10 +575,8 @@ void SARSA(int i_max, float epsilon, float alpha, float gamma) {
 				Rand_Move(2);
 			}
 
-			//Mise à jour de Q : Si il n'y a pas de gagnant ou d'égalité
-			Q[prev_indice][3*move_col_x + move_col_x] = Q[prev_indice][3*move_col_x + move_col_x] + alpha*(gamma*Q_Max_Line(indice) - Q[prev_indice][3*move_col_x + move_col_x]);
-			
-			
+			//Mise à jour de Q : Si il n'y a pas de gagnant ou d'égalité : former = a, move = a'
+			Q[prev_indice][3*former_row_x + former_col_x] = Q[prev_indice][3*former_row_x + former_col_x] + alpha*(gamma*Q[indice][3*move_row_x + move_col_x] - Q[prev_indice][3*former_row_x + former_col_x]);
 
 		}
 
@@ -625,20 +621,15 @@ int main()
 	srand(time(0));
 	
 	//Paramètres de Reinforcement Learning
-	int i_max = 1000000;
+	int i_max = 5000000;
 	float epsilon = 0.5;
-  	float alpha = 1;
-  	float gamma = 1;
+  	float alpha = 0.5;
+  	float gamma = 0.5;
 
 	Q_Initialisation();
 	Q_Render(0,20);
 
-	Q_Training(i_max,epsilon,alpha,gamma);
-	printf("QRender 2035-2037\n");
-	Q_Render(2035,2037);
-
-	printf("QRender 4222-4223\n");
-	Q_Render(4222,4224);
+	SARSA(i_max,epsilon,alpha,gamma);
 
 	free(Morpion);
 	free(Q);
