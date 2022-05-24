@@ -1,8 +1,7 @@
 ##TABLE OF CONTENTS
 * [Author](#authors)
-* [Context & Objectives](#context)
-* [General Info on the project](#general-info)
-* [How to use](#use)
+* [Context & Objectives](#context-&-objectives)
+* [General Info on the project & How to use](#general-info)
 
 ## Authors
 This project was created by Roderick Revois & Olivier Ledard as part of the teaching unit IN104 of the French University ENSTA Paris.  
@@ -25,7 +24,7 @@ The initial parameters work perfectly though, and were found to be more or less 
   
 The training can then be launched with the command while in the *src* depository :  
   
-                *gcc -o *NameOfTheExecutable* -lm functions.c mazeEnv.c QLearning.c -lm*  
+                gcc -o *NameOfTheExecutable* -lm functions.c mazeEnv.c QLearning.c -lm  
                   
 Or using the *makefile* *(Option not effective yet)*
 
@@ -47,6 +46,6 @@ Results : To display the percentage of victories of each player
   
 The training can then be launched with the command in the *morpion* depository :  
   
-*gcc -Wall -Werrors -Wfatal-errors -o *NameOfTheExecutable* morpion.c*
+gcc -Wall -Werrors -Wfatal-errors -o *NameOfTheExecutable* morpion.c  
   
 Or using the *makefile* *(Option not available yet)*
