@@ -14,7 +14,7 @@ Said project was realised to learn and make a first step in the world of machine
 
 ## General Information
 1) The first part of the project was to use the QLearning algorithm to find the exit of a maze.  
-Loading the QLearning.c file, you can change the different characteristics of the project directly at the top of the file.  
+Loading the Q_Learning.c file, you can change the different characteristics of the project directly at the top of the file.  
   
 i_max : number of iterations  
 epsilon : random factor  
