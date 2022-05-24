@@ -10,12 +10,23 @@ double** Q;
 int r;
 
 float epsilon = 0.5;
-float alpha = 0.5;
-float gamma = 0.9;
-int i_max = 10000;
+float alpha = 0.8;
+float gammaB = 0.9;
+int i_max = 500;
+
+
+void Q_render(){
+     for (int i=0; i<rows*cols; i++) {
+         for (int j=0; j<4; j++){
+             printf("%f ", Q[i][j]);
+         }
+         printf("\n");
+     }
+     printf("\n");
+}
 
 //Fonction de policy
-enum action eps_greedy(float epsilon) {
+enum action eps_greedy(float epsilon,int k) {
 
 	int r2 = 0;
 	int a = 0;
@@ -24,9 +35,9 @@ enum action eps_greedy(float epsilon) {
 		
 		return (enum action)(rand() % number_actions); 
 	}
-		
+	
 	else { //On choisit une action qui maximise Q
-		
+	
 		double m = Q[state_row*cols+state_col][0];
 		for (int i=1; i<4; i++) {
 			
@@ -79,18 +90,19 @@ void QInitialisation() {
 
 
 //Training
-void QTraining (int i_max, float epsilon, float alpha, float gamma) {
+void QTraining (float gamma) {
 	
 	for (int i = 0; i<i_max; i++) {
 
 		if (i == i_max-1) {
-				free(visited);
-				init_visited();
+			free(visited);
+			init_visited();
 		}
 
 		if (i == 3*i_max/4) {
 			epsilon = 0.5*(1-(float)i/(float)i_max);	
 		}
+		
 		
 		srand(time(0));
 		printf("i = %d\n",i);
@@ -100,7 +112,7 @@ void QTraining (int i_max, float epsilon, float alpha, float gamma) {
 			
 			//srand(time(0));
 
-			action a = eps_greedy(epsilon);
+			action a = eps_greedy(epsilon,i);
 			struct envOutput new_output = maze_step(a);
 			
 			float reward = new_output.reward;
@@ -140,28 +152,22 @@ void QTraining (int i_max, float epsilon, float alpha, float gamma) {
 	}
 }
 
-void Q_render(){
-     for (int i=0; i<rows*cols; i++) {
-         for (int j=0; j<4; j++){
-             printf("%f ", Q[i][j]);
-         }
-         printf("\n");
-     }
-     printf("\n");
-}
-
 int main() {
 	maze_make("maze.txt");
   	init_visited();
   	maze_render();
-
+	
+	float gamma = gammaB;	
+	
   	printf("%d, %d \n", rows, cols);
    	printf("number of actions :  %d \n", number_actions);
    	QInitialisation();
    	Q_render();
-   	QTraining(i_max,epsilon,alpha,gamma);
+   	QTraining(gamma);
    	Q_render();
-   	//maze_render();
+   	printf("    ^ ^ ^ ^ ^ ^ ^ ^ ^\n");
+   	printf("    | | | | | | | | |\n");
+   	printf("Le chemin est bien tracé dans la matrice Q ci-dessus !!\n");
    	
    	free(visited);
    	free(maze);
