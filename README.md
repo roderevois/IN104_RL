@@ -23,15 +23,30 @@ alpha   : learning rate
 gamma   : actualization rate  
 The initial parameters work perfectly though, and were found to be more or less the most optimized parameters for __our__ project.  
   
-The training can then be launched with the command :  
+The training can then be launched with the command while in the *src* depository :  
   
                 *gcc -o *NameOfTheExecutable* -lm functions.c mazeEnv.c QLearning.c -lm*  
                   
-Or using the *makefile*
-  
----------------
+Or using the *makefile* *(Option not effective yet)*
+
   
 2) The second part of the project deals with The Tic-Tac-Toe game. We attempt to train the computer to play the game, and it succeeds !  
 This part can use both QLearning and SARSA algorithms, though as we worked all the project with QLearning we strongly recomand its use. The SARSA algorithm is running, but non optimized yet and gives bad results. This algorithm will be optimized in the next days.  
   
-Loading 
+Loading the morpion.c file, you will be able to change the differnt parameters at the top of the file  
+  
+i_max : number of iterations  
+epsilon : random factor  
+alpha   : learning rate  
+gamma   : actualization rate 
+  
+You will be able to monitor the display through these values __(0 for NO, 1 for YES)__  
+  
+ShowGrid : To display the current grid at each iteration  
+Results : To display the percentage of victories of each player  
+  
+The training can then be launched with the command in the *morpion* depository :  
+  
+*gcc -Wall -Werrors -Wfatal-errors -o *NameOfTheExecutable* morpion.c*
+  
+Or using the *makefile* *(Option not available yet)*
