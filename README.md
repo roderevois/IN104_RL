@@ -21,11 +21,15 @@ i_max : number of iterations
 epsilon : random factor  
 alpha   : learning rate  
 gamma   : actualization rate  
-The initial parameters work perfectly though, and were found to be more or less the most optimized parameters for _our_ project.  
+The initial parameters work perfectly though, and were found to be more or less the most optimized parameters for __our__ project.  
   
 The training can then be launched with the command :  
+  
                 *gcc -o *NameOfTheExecutable* -lm functions.c mazeEnv.c QLearning.c -lm*  
-Or using the makefile
+                  
+Or using the *makefile*
+  
+---------------
   
 2) The second part of the project deals with The Tic-Tac-Toe game. We attempt to train the computer to play the game, and it succeeds !  
 This part can use both QLearning and SARSA algorithms, though as we worked all the project with QLearning we strongly recomand its use. The SARSA algorithm is running, but non optimized yet and gives bad results. This algorithm will be optimized in the next days.  
