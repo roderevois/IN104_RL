@@ -1,7 +1,7 @@
 ##TABLE OF CONTENTS
 * [Author](#authors)
-* [Context & Objectives](#context-&-objectives)
-* [General Info on the project & How to use](#general-info)
+* [Context & Objectives](#context & objectives)
+* [General Info on the project & How to use](#general info)
 
 ## Authors
 This project was created by Roderick Revois & Olivier Ledard as part of the teaching unit IN104 of the French University ENSTA Paris.  
