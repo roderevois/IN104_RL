@@ -15,12 +15,7 @@ int** Morpion;
 int length = 19683;
 
 //Nombre aléatoire de début de chaine
-//int r;
-
-
-int op1 = 0;
-int op2 = 0;
-
+int r;
 
 //Variables de renvoi de position
 int move_row_x;
@@ -243,15 +238,15 @@ void Rand_Move(int id) {
 	int row2;
 	int col2;
 
-	//srand(r);
-	//r = rand();
+	srand(r);
+	r = rand();
 	int row = rand() % 3;
 	int col = rand() % 3;
 
 	while (Morpion[row][col]!=0) {
 
-		//srand(r);
-		//r = rand();
+		srand(r);
+		r = rand();
 		row2 = rand() % 3;
 		col2 = rand() % 3;
 
@@ -277,14 +272,15 @@ void Rand_Move(int id) {
 }
 
 void Morpion_Indice() {
+	prev_indice = indice;
 	indice = 6561*Morpion[0][0] + 2187*Morpion[0][1] + 729*Morpion[0][2] + 243*Morpion[1][0] + 81*Morpion[1][1] + 27*Morpion[1][2] + 9*Morpion[2][0] + 3*Morpion[2][2] + Morpion[2][2];
 }
 
 //Fonction de policy
 void eps_greedy(float epsilon) {
 	
-	//srand(r);
-	//r = rand();
+	srand(r);
+	r = rand();
 	int rd = rand() % 1000;
 
 	if (rd<=epsilon*1000) { //Action aléatoire
@@ -332,8 +328,8 @@ void eps_greedy(float epsilon) {
 		}
 		
 		//On choisit au hasard un des indices
-		//srand(r);
-		//r = rand();
+		srand(r);
+		r = rand();
 		rd = rand() % nb; //rd compris entre 0 et nb-1
 		a = M[rd];
 		
@@ -396,8 +392,8 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 
 
 	//Initialisation de l'aléatoire
-	
-	//r = rand();
+	srand(time(0));
+	r = rand();
 
 	//Compteur de victoires
 	int vict_rand = 0;
@@ -408,11 +404,10 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 
 	for (int i = 0; i<i_max; i++) {
 
-		/*
-		if (i > 1000) {
-			epsilon = epsilon/2;
+		if (i > 50000) {
+			epsilon = 0.01;
 		}
-		*/
+		
 		
 		//Reset en début de boucle
 		Morpion_Reset();
@@ -453,15 +448,8 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			//MAJ de l'indice
 			Morpion_Indice();
 
-			if (indice == 2036) {
-				op1 = op1 +1;
-			}
-			if (indice == 4759) {
-				op2 = op2 +1;
-			}
-
-			//MAJ Q : Si il n'y a pas de gagnant ou d'égalité
-			if (Win == 0 && Drw == 0){
+			//MAJ Q : Si il n'y a pas de gagnant ou d'égalité ET que le joueur vient de jouer
+			if (Win == 0 && Drw == 0 && (sub_tour % 2) == 0) {
 				Q[prev_indice][3*move_col_x + move_col_x] = Q[prev_indice][3*move_col_x + move_col_x] + alpha*(gamma*Q_Max_Line(indice) - Q[prev_indice][3*move_col_x + move_col_x]);
 			}
 
@@ -473,14 +461,18 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 		//Mise à jour des compteurs
 		//On place un 1 (bonus) pour l'état et l'action de Q qui ont mené à cette égalité si l'agent a joué en dernier
 		if (Win == 1) {
+			if (i>50000) {
 			vict_q = vict_q + 1;
+			}
 			if ((sub_tour) % 2 == 1) { //L'agent a joué
-				Q[prev_indice][3*move_col_x + move_col_x] = 1;
+				Q[prev_indice][3*move_col_x + move_col_x] = 2;
 			}
 		}
 		//On place un 0 (pénalisation) pour l'état et l'action de Q qui ont mené à cette égalité si l'agent a joué en dernier
 		if (Win == 2) {
+			if (i>50000) {
 			vict_rand = vict_rand + 1;
+			}
 			if ((sub_tour) % 2 == 1) {
 				Q[prev_indice][3*move_col_x + move_col_x] = 0;
 			}
@@ -492,15 +484,137 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			}
 		}
 
+		//Le tour de commencer passe à l'autre
+		tour = (tour+1) % 2;
+	}
+	printf("vict_rand = %d\n",vict_rand);
+	printf("vict_q = %d\n\n",vict_q);
+}
 
-		//printf("Morpion en sortie :\n");
+void SARSA(int i_max, float epsilon, float alpha, float gamma) {
+	
+	//A qui le tour, on fait commencer chacun son tour les adversaires
+	int tour = 0;
+	int sub_tour;
+
+
+	//Initialisation de l'aléatoire
+	srand(time(0));
+	r = rand();
+
+	//Compteur de victoires
+	int vict_rand = 0;
+	int vict_q = 0;
+
+	int Win;
+	int Drw;
+
+	for (int i = 0; i<i_max; i++) {
+
+		if (i > i_max - 50000) {
+			epsilon = 0.01;
+		}
+		
+		
+		//Reset en début de boucle
+		Morpion_Reset();
 		//Morpion_Render();
-		//printf("vict_rand = %d\n",vict_rand);
-		//printf("vict_q = %d\n\n",vict_q);
+		Win = 0;
+		Drw = 0;
+		Morpion_Indice();
+
+		//printf("i = %d\n",i);
+
+		sub_tour = tour;
+
+		//ON fait le choix d'une première action HORS de la boucle (SARSA)
+		if ((sub_tour % 2) == 0) { //L'agent commence ce tour ci
+			eps_greedy(epsilon);
+		}
+
+		else { //L'agent aléatoire commence ce tour ci
+			Rand_Move(2);
+		}
+
+		//Corps de l'algorithme de QLearning
+		while(Win == 0 && Drw == 0) {
+
+			prev_indice = indice;
+
+			if ((sub_tour % 2) == 0) { //L'agent joue
+				Morpion[move_row_x][move_col_x] = 1;
+
+			}
+
+			else { //L'agent aléatoire joue
+				Morpion[move_row_o][move_col_o] = 2;
+
+			}
+
+			//Si un vainqueur est trouvé on sort de la boucle
+			Win = Is_Winning();
+			if (Win != 0) {
+				break;
+			}
+
+			//Ou si la matrice est pleine on sort de la boucle
+			Drw = Is_Full();
+			if (Drw == 1) {
+				break;
+			}
+
+			sub_tour = sub_tour + 1;
+
+			//MAJ de l'indice
+			Morpion_Indice();
+
+			//Choix d'une action a' à considérer depuis la positions s' (la position actuelle)
+			if ((sub_tour % 2) == 0) { //C'est à l'agent de jouer
+				eps_greedy(epsilon);
+			}
+
+			else { //C'est à l'agent aléatoire de jouer
+				Rand_Move(2);
+			}
+
+			//Mise à jour de Q : Si il n'y a pas de gagnant ou d'égalité
+			Q[prev_indice][3*move_col_x + move_col_x] = Q[prev_indice][3*move_col_x + move_col_x] + alpha*(gamma*Q_Max_Line(indice) - Q[prev_indice][3*move_col_x + move_col_x]);
+			
+			
+
+		}
+
+		//Mise à jour des compteurs
+		//On place un 1 (bonus) pour l'état et l'action de Q qui ont mené à cette égalité si l'agent a joué en dernier
+		if (Win == 1) {
+			if (i>i_max-50000) {
+			vict_q = vict_q + 1;
+			}
+			if ((sub_tour) % 2 == 1) { //L'agent a joué
+				Q[prev_indice][3*move_col_x + move_col_x] = 2;
+			}
+		}
+		//On place un 0 (pénalisation) pour l'état et l'action de Q qui ont mené à cette égalité si l'agent a joué en dernier
+		if (Win == 2) {
+			if (i>i_max-50000) {
+			vict_rand = vict_rand + 1;
+			}
+			if ((sub_tour) % 2 == 1) {
+				Q[prev_indice][3*move_col_x + move_col_x] = 0;
+			}
+		}
+		//On place un 0.5 pour l'état et l'action de Q qui ont mené à cette égalité si l'agent a joué en dernier
+		if (Win == 0) { //Egalité
+			if ((sub_tour) % 2 == 1) {
+				Q[prev_indice][3*move_col_x + move_col_x] = 0.5;
+			}
+		}
 
 		//Le tour de commencer passe à l'autre
 		tour = (tour+1) % 2;
 	}
+	printf("vict_rand = %d\n",vict_rand);
+	printf("vict_q = %d\n\n",vict_q);
 }
 
 int main() 
@@ -511,10 +625,10 @@ int main()
 	srand(time(0));
 	
 	//Paramètres de Reinforcement Learning
-	int i_max = 100000000;
+	int i_max = 1000000;
 	float epsilon = 0.5;
-  	float alpha = 0.75;
-  	float gamma = 0.9;
+  	float alpha = 1;
+  	float gamma = 1;
 
 	Q_Initialisation();
 	Q_Render(0,20);
@@ -523,11 +637,9 @@ int main()
 	printf("QRender 2035-2037\n");
 	Q_Render(2035,2037);
 
-	printf("QRender 4758-4760\n");
-	Q_Render(0,2000);
+	printf("QRender 4222-4223\n");
+	Q_Render(4222,4224);
 
-	printf("op1 = %d\n",op1);
-	printf("op2 = %d\n",op2);
 	free(Morpion);
 	free(Q);
 	return 0;
