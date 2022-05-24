@@ -29,6 +29,7 @@ The training can then be launched with the command while in the *src* depository
 Or using the *makefile* *(Option not effective yet)*
 
   
+  
 2) The second part of the project deals with The Tic-Tac-Toe game. We attempt to train the computer to play the game, and it succeeds !  
 This part can use both QLearning and SARSA algorithms, though as we worked all the project with QLearning we strongly recomand its use. The SARSA algorithm is running, but non optimized yet and gives bad results. This algorithm will be optimized in the next days.  
   
@@ -46,6 +47,6 @@ Results : To display the percentage of victories of each player
   
 The training can then be launched with the command in the *morpion* depository :  
   
-gcc -Wall -Werrors -Wfatal-errors -o *NameOfTheExecutable* morpion.c  
+                gcc -Wall -Werrors -Wfatal-errors -o *NameOfTheExecutable* morpion.c  
   
 Or using the *makefile* *(Option not available yet)*
