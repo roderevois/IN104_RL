@@ -408,6 +408,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 			epsilon = 0.01;
 		}
 		
+		Morpion_Render();
 		
 		//Reset en début de boucle
 		Morpion_Reset();
@@ -489,6 +490,7 @@ void Q_Training(int i_max, float epsilon, float alpha, float gamma) {
 	}
 	printf("vict_rand = %d\n",vict_rand);
 	printf("vict_q = %d\n\n",vict_q);
+	printf("Pourcentage de victoires : %f\n",(float)vict_q/2000);
 }
 
 void SARSA(int i_max, float epsilon, float alpha, float gamma) {
@@ -621,7 +623,7 @@ int main()
 	srand(time(0));
 	
 	//Paramètres de Reinforcement Learning
-	int i_max = 5000000;
+	int i_max = 1000000;
 	float epsilon = 0.5;
   	float alpha = 0.5;
   	float gamma = 0.5;
@@ -629,7 +631,7 @@ int main()
 	Q_Initialisation();
 	Q_Render(0,20);
 
-	SARSA(i_max,epsilon,alpha,gamma);
+	Q_Training(i_max,epsilon,alpha,gamma);
 
 	free(Morpion);
 	free(Q);

@@ -9,6 +9,11 @@
 double** Q;
 int r;
 
+float epsilon = 0.5;
+float alpha = 0.5;
+float gamma = 0.9;
+int i_max = 10000;
+
 //Fonction de policy
 enum action eps_greedy(float epsilon) {
 
@@ -150,16 +155,13 @@ int main() {
   	init_visited();
   	maze_render();
 
-  	float epsilon = 0.5;
-  	float alpha = 0.5;
-  	float gamma = 0.9;
   	printf("%d, %d \n", rows, cols);
    	printf("number of actions :  %d \n", number_actions);
    	QInitialisation();
    	Q_render();
-   	QTraining(10000,epsilon,alpha,gamma);
+   	QTraining(i_max,epsilon,alpha,gamma);
    	Q_render();
-   	maze_render();
+   	//maze_render();
    	
    	free(visited);
    	free(maze);
