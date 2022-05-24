@@ -22,6 +22,7 @@ epsilon : random factor
 alpha   : learning rate  
 gamma   : actualization rate  
   
-The training can then be launched with the command : gcc -o *NameOfTheExecutable* -lm functions.c mazeEnv.c QLearning.c -lm  
+The training can then be launched with the command :  
+*gcc -o *NameOfTheExecutable* -lm functions.c mazeEnv.c QLearning.c -lm*
 Or using the make file
 
