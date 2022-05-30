@@ -46,7 +46,7 @@ ShowGrid : To display the current grid at each iteration
 Results : To display the percentage of victories of each player  
   
 The training can then be launched using the makefile while in the maze_project/  
-Or using the following command while in the *src/* depository :  
+Or using the following command while in the *morpion/* depository :  
   
                 gcc -Wall -Werrors -Wfatal-errors -o *NameOfTheExecutable* morpion.c  
   
