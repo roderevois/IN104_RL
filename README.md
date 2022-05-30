@@ -23,7 +23,7 @@ gamma   : actualization rate
   
 The initial parameters work perfectly though, and were found to be more or less the most optimized parameters for __our__ project.  
   
-The training can then be launched using the makefile while in the maze_project/ 
+The training can then be launched using the makefile while in the maze_project/  
 Or using the following command while in the *src/* depository :  
   
                 gcc -o *NameOfTheExecutable* -lm functions.c mazeEnv.c QLearning.c -lm  
