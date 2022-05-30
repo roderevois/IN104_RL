@@ -26,7 +26,7 @@ void Q_render(){
 }
 
 //Fonction de policy
-enum action eps_greedy(float epsilon,int k) {
+enum action eps_greedy(float epsilon) {
 
 	int r2 = 0;
 	int a = 0;
@@ -60,7 +60,6 @@ enum action eps_greedy(float epsilon,int k) {
 }
 
 //Implémentation de la fonction Q-learning
-
 
 //Initialisation
 void QInitialisation() {
@@ -112,7 +111,7 @@ void QTraining (float gamma) {
 			
 			//srand(time(0));
 
-			action a = eps_greedy(epsilon,i);
+			action a = eps_greedy(epsilon);
 			struct envOutput new_output = maze_step(a);
 			
 			float reward = new_output.reward;
